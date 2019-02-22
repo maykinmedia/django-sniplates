@@ -344,12 +344,17 @@ class FieldExtractor(dict):
 
     @cached_property
     def choices(self):
-        c = self.form_field.field.choices
+        try:
+            c = self.form_field.field.choices
+        except AttributeError:
+            c = self.form_field.field.widget.choices
+
         if not c:
             return c
+
         return tuple(
             ChoiceWrapper(value=k, display=v)
-            for k, v in self.form_field.field.choices
+            for k, v in c
         )
 
 
